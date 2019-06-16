@@ -16,9 +16,18 @@ app.config["DEBUG"] = True
 def home():
 	return render_template('home.html')
 
-@app.route('/vendors', methods=['GET'])
-def vendors():
-	return render_template('vendors.html')
+@app.route('/addVendors', methods=['GET'])
+def addVendors():
+	return render_template('addVendors.html')
+
+@app.route('/updateVendors', methods=['GET'])
+def updateVendors():
+	return render_template('updateVendors.html')
+
+@app.route('/deleteVendors', methods=['GET'])
+def deleteVendors():
+	return render_template('deleteVendors.html')
+
 
 @app.route('/generateBill', methods=['GET'])
 def generateBill():

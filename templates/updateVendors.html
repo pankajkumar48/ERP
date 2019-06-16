@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Update Vendors
+{% endblock %}
+
+
+{% block main %}
+
+<br><br>
+  <h2 class="text-center">Update Vendors</h2>
+    <div id="mainBody">
+  <form>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">Name</label>
+      <input type="text" class="form-control" id="inputVendorName" placeholder="Vendor's name">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">Rate (Rs.)</label>
+      <input type="number" step="any" class="form-control" id="inputPassword4" placeholder="Rate ">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputAddress">Locality</label>
+    <input type="text" class="form-control" id="inputAddress1" placeholder="Plot No 1">
+  </div>
+  <div class="form-group">
+    <label for="inputAddress2">Area</label>
+    <input type="text" class="form-control" id="inputAddress2" placeholder="Sector 9A">
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">City</label>
+      <input type="text" class="form-control" id="inputCity" value="Navi Mumbai">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputState">State</label>
+      <input type="text" class="form-control" id="inputState" value="Maharashtra">
+    </div>
+    <div class="form-group col-md-2">
+      <label for="inputZip">Zip</label>
+      <input type="text" class="form-control" id="inputZip">
+    </div>
+  </div>
+  
+  
+  <div class="col-md-16 text-center"> 
+    <button type="submit" class="col-md-16 btn btn-outline-primary btn-lg">Update</button> 
+  </div>
+
+  <br>
+  
+</form>
+
+</div>
+
+
+{% endblock %}
