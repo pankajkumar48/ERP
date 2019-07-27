@@ -1,0 +1,17 @@
+﻿create table vendors(
+cardno integer primary key,
+vendorname varchar(100),
+vendoraddress varchar(200),
+vendorrate real,
+item varchar);
+
+
+create table transactions(
+cardno integer,
+billno integer,
+billdate date,
+item varchar(50),
+qty real,
+rate real,
+amount real,
+timestamp timestamp without time zone);
