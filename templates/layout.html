@@ -8,10 +8,58 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="myStyle.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="jquery-3.3.1.slim.min.js"></script>
+    <script src="jquery-3.3.1.js"></script>
+    <script src="popper.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="allScripts.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
     
+    <!-- script for search bar -->
+      <script>
+  $( function() {
+    var availableTags = [
+      {% for n in names %}"{{n}}",{% endfor %}
+    ];
+
+    $( "#searcho" ).autocomplete({
+      source: availableTags,
+      select: function( event, ui ) {
+        $.ajax({
+          type: 'POST',
+          cache: false,
+          url: '/getFormAfterSearch',
+          data: {
+            vendorString: ui.item.value
+          },
+          success: function(result){
+            console.log(result);
+            document.getElementById("cardNo").value = result['cardNo'];
+            document.getElementById("vendorName").value = result['vendorName'];
+            document.getElementById("inputProduct").value = result['item'];
+            document.getElementById("vendorRate").value = result['vendorRate'];
+            document.getElementById("inputAddress1").value = result['inputAddress1'];
+            document.getElementById("inputAddress2").value = result['inputAddress2'];
+            document.getElementById("inputCity").value = result['inputCity'];
+            document.getElementById("inputState").value = result['inputState'];
+            document.getElementById("inputZip").value = result['inputZip'];
+          }
+        })
+      }
+    });
+  });
+  </script>
+
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">Mayur's</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,22 +93,16 @@
         <a class="nav-link" href="/allTransactions">All Transactions</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
+    <!-- <form class="form-inline my-2 my-lg-0">
+      <input id="searcho" type="search" placeholder="Search" aria-label="Search">
+    </form> -->
+    <input id = "searcho">
   </div>
 </nav>
 
   
     {% block main %}{% endblock %}
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="jquery-3.3.1.slim.min.js"></script>
-    <script src="jquery-3.3.1.js"></script>
-    <script src="popper.min.js"></script>
-    <script src="bootstrap.min.js"></script>
-
+    
   </body>
 </html>

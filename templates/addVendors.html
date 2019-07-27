@@ -76,7 +76,7 @@
 
 
   <br>
-  
+  <div id="snackbar"></div>
 
 
 </div>
@@ -95,9 +95,9 @@
             others: $("#others").val(),
             inputProduct: $("#inputProduct").val(),
         }, // multiple data sent using ajax
-        success: function(result) {
+            success: function(result) {
             console.log(result);
-            
+            mySnakbar("Successfully added " + $("#vendorName").val() + " to database");
             
               
           }

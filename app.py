@@ -5,6 +5,7 @@ from flask import request, jsonify, render_template, url_for
 import json
 import datetime
 import psycopg2
+from helpers import getSearchBarData
 
 app = flask.Flask(__name__,static_url_path='',
 			static_folder='static',
@@ -14,28 +15,36 @@ app.config["DEBUG"] = True
 
 @app.route('/', methods=['GET'])
 def home():
-	return render_template('home.html')
+	names = getSearchBarData()
+	return render_template('home.html', names=names)
+
+
 
 @app.route('/addVendors', methods=['GET'])
 def addVendors():
-	return render_template('addVendors.html')
+	names = getSearchBarData()
+	return render_template('addVendors.html', names=names)
 
 @app.route('/updateVendors', methods=['GET'])
 def updateVendors():
-	return render_template('updateVendors.html')
+	names = getSearchBarData()
+	return render_template('updateVendors.html', names=names)
 
 @app.route('/deleteVendors', methods=['GET'])
 def deleteVendors():
-	return render_template('deleteVendors.html')
+	names = getSearchBarData()
+	return render_template('deleteVendors.html', names=names)
 
 
 @app.route('/generateBill', methods=['GET'])
 def generateBill():
-	return render_template('generateBill.html')
+	names = getSearchBarData()
+	return render_template('generateBill.html', names=names)
 
 @app.route('/allTransactions', methods=['GET'])
 def allTransactions():
-	return render_template('allTransactions.html')
+	names = getSearchBarData()
+	return render_template('allTransactions.html', names=names)
 
 @app.route('/addVendorToDB', methods=['POST'])
 def addVendorToDB():
@@ -44,6 +53,51 @@ def addVendorToDB():
 	vendorAddress = request.form.get("vendorAddress")
 	print(f"{vendorName}, {vendorRate} \n {vendorAddress}")
 	return jsonify("successfully received")
+
+# This is used to populate data after doing a search from search bar
+@app.route('/getFormAfterSearch', methods=['POST'])
+def getFormAfterSearch():
+	vendorString = request.form.get("vendorString")
+	print(vendorString)
+	vendorString = vendorString.split(':')
+	vendorCardNo = vendorString[1].strip()
+
+	conn = None
+	try:
+		hostname = 'localhost'
+		username = 'pankaj kumar'
+		password = 'quad2core'
+		database = 'postgres'
+		conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )
+		cur = conn.cursor()
+		cur.execute(f"select * from vendors where cardno = {vendorCardNo}")
+		allVendorData = cur.fetchall()
+		conn.commit()
+		cur.close()
+
+		resDict = {}
+		resDict['cardNo'] = allVendorData[0][0]
+		resDict['vendorName'] = allVendorData[0][1]
+
+		temp = allVendorData[0][2]
+		temp = temp.split(',')
+		temp = [t.strip() for t in temp]
+		resDict['inputAddress1'] = temp[0]
+		resDict['inputAddress2'] = temp[1]
+		resDict['inputCity'] = temp[2]
+		resDict['inputState'] = temp[3]
+		resDict['inputZip'] = temp[4]
+
+		resDict['vendorRate'] = allVendorData[0][3]
+		resDict['item'] = allVendorData[0][4]
+
+	except (Exception, psycopg2.DatabaseError) as error:
+		print(error)
+		resDict = str(error)
+	finally:
+		if conn is not None:
+			conn.close()
+	return jsonify(resDict)
 
 @app.route('/addVendor2DB', methods=['POST'])
 def addVendor2DB():
@@ -84,6 +138,8 @@ def addVendor2DB():
 			conn.close()
 			#res = "successfully inserted"
 	return jsonify(res)
+
+
 
 if __name__ == '__main__':
 	app.run(debug=True)
