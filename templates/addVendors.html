@@ -1,16 +1,16 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Add Vendors
+Add Vendors
 {% endblock %}
 
 
 {% block main %}
 
 <br><br>
-  <h2 class="text-center">Add Vendors</h2>
-    <div id="mainBody">
-  
+<h2 class="text-center">Add Vendors</h2>
+<div id="mainBody">
+
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="vendorName">Name</label>
@@ -36,8 +36,8 @@
       </select>
     </div>
     <div class="form-group col-md-6" id="inputOtherProduct" style='display:none'>
-        <label for="inputOtherProduct">Others</label>
-        <input type="text" class="form-control"  id="others" placeholder="Please specify" >
+      <label for="inputOtherProduct">Others</label>
+      <input type="text" class="form-control" id="others" placeholder="Please specify">
     </div>
     <div class="form-group col-md-6">
       <label for="inputPassword4">Rate (Rs.)</label>
@@ -67,11 +67,11 @@
       <input type="text" class="form-control" id="inputZip">
     </div>
   </div>
-  
-  
-  
-  <div class="col-md-16 text-center"> 
-    <button  class="col-md-16 btn btn-outline-primary btn-lg btn-outline-success" onclick="addVendorToDBs()">Add</button> 
+
+
+
+  <div class="col-md-16 text-center">
+    <button class="col-md-16 btn btn-outline-primary btn-lg btn-outline-success" onclick="addVendorToDBs()">Add</button>
   </div>
 
 
@@ -84,37 +84,35 @@
 <script type="text/javascript">
   function addVendorToDBs() {
     $.ajax({
-        type: "POST",
-        cache: false,
-        url: "/addVendor2DB",
-        data: {
-            vendorName: $("#vendorName").val(),
-            vendorRate: $("#vendorRate").val(),
-            vendorAddress: $("#inputAddress1").val() + ', ' + $("#inputAddress2").val() + ', ' + $("#inputCity").val() + ', ' + $("#inputState").val() + ', ' + $("#inputZip").val(),
-            cardNo: $("#cardNo").val(),
-            others: $("#others").val(),
-            inputProduct: $("#inputProduct").val(),
-        }, // multiple data sent using ajax
-            success: function(result) {
-            console.log(result);
-            mySnakbar("Successfully added " + $("#vendorName").val() + " to database");
-            
-              
-          }
-      });
+      type: "POST",
+      cache: false,
+      url: "/addVendors",
+      data: {
+        vendorName: $("#vendorName").val(),
+        vendorRate: $("#vendorRate").val(),
+        vendorAddress: $("#inputAddress1").val() + ', ' + $("#inputAddress2").val() + ', ' + $("#inputCity").val() + ', ' + $("#inputState").val() + ', ' + $("#inputZip").val(),
+        cardNo: $("#cardNo").val(),
+        others: $("#others").val(),
+        inputProduct: $("#inputProduct").val(),
+      }, // multiple data sent using ajax
+      success: function (result) {
+        console.log(result);
+        mySnakbar("Successfully added " + $("#vendorName").val() + " to database");
+
+
+      }
+    });
   }
 </script>
 
 <script type="text/javascript">
-  function checkvalue(val)
-  {
-      if(val==="others")
-         document.getElementById('inputOtherProduct').style.display='block';
-      else
-         document.getElementById('inputOtherProduct').style.display='none'; 
+  function checkvalue(val) {
+    if (val === "others")
+      document.getElementById('inputOtherProduct').style.display = 'block';
+    else
+      document.getElementById('inputOtherProduct').style.display = 'none';
   }
 </script>
 
 
 {% endblock %}
-    

@@ -1,83 +1,108 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Delete Vendors
+Delete Vendors
 {% endblock %}
 
 
 {% block main %}
 
 <br><br>
-  <h2 class="text-center">Delete Vendors</h2>
-    <div id="mainBody">
-  
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="vendorName">Name</label>
-          <input type="text" class="form-control" id="vendorName" placeholder="Vendor's name">
-        </div>
-        <div class="form-group col-md-6">
-          <label for="cardNo">Card No</label>
-          <input type="text" class="form-control" id="cardNo" placeholder="123062019">
-        </div>
-      </div>
-    
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="inputProduct">Product</label>
-          <select id="inputProduct" class="form-control" onchange="checkvalue(this.value)">
-            <option selected>Choose...</option>
-            <option value="1L">20 Lts.</option>
-            <option value="1L">1 Lts. Box (1x12)</option>
-            <option value="1L">1/2 Ltrs. Box</option>
-            <option value="1L">2 Ltrs. Box</option>
-            <option value="1L">Glass</option>
-            <option value="others">None of the above</option>
-          </select>
-        </div>
-        <div class="form-group col-md-6" id="inputOtherProduct" style='display:none'>
-            <label for="inputOtherProduct">Others</label>
-            <input type="text" class="form-control"  id="others" placeholder="Please specify" >
-        </div>
-        <div class="form-group col-md-6">
-          <label for="inputPassword4">Rate (Rs.)</label>
-          <input type="number" step="any" class="form-control" id="vendorRate" placeholder="Rate ">
-        </div>
-      </div>
-    
-      <div class="form-group">
-        <label for="inputAddress">Locality</label>
-        <input type="text" class="form-control" id="inputAddress1" placeholder="Plot No 1">
-      </div>
-      <div class="form-group">
-        <label for="inputAddress2">Area</label>
-        <input type="text" class="form-control" id="inputAddress2" placeholder="Sector 9A">
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="inputCity">City</label>
-          <input type="text" class="form-control" id="inputCity" value="Navi Mumbai">
-        </div>
-        <div class="form-group col-md-4">
-          <label for="inputState">State</label>
-          <input type="text" class="form-control" id="inputState" value="Maharashtra">
-        </div>
-        <div class="form-group col-md-2">
-          <label for="inputZip">Zip</label>
-          <input type="text" class="form-control" id="inputZip">
-        </div>
-      </div>
-  
-  
-  <div class="col-md-16 text-center"> 
-    <button type="submit" class="col-md-16 btn btn-outline-primary btn-lg btn-outline-danger">Delete</button> 
+<h2 class="text-center">Delete Vendors</h2>
+<div id="mainBody">
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="vendorName">Name</label>
+      <input type="text" class="form-control" id="vendorName" placeholder="Vendor's name" disabled>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="cardNo">Card No</label>
+      <input type="text" class="form-control" id="cardNo" placeholder="123062019" disabled>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputProduct">Product</label>
+      <select id="inputProduct" class="form-control" onchange="checkvalue(this.value)">
+        <option selected>Choose...</option>
+        <option value="1L">20 Lts.</option>
+        <option value="1L">1 Lts. Box (1x12)</option>
+        <option value="1L">1/2 Ltrs. Box</option>
+        <option value="1L">2 Ltrs. Box</option>
+        <option value="1L">Glass</option>
+        <option value="others">None of the above</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6" id="inputOtherProduct" style='display:none'>
+      <label for="inputOtherProduct">Others</label>
+      <input type="text" class="form-control" id="others" placeholder="Please specify" disabled>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">Rate (Rs.)</label>
+      <input type="number" step="any" class="form-control" id="vendorRate" placeholder="Rate " disabled>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="inputAddress">Locality</label>
+    <input type="text" class="form-control" id="inputAddress1" placeholder="Plot No 1" disabled>
+  </div>
+  <div class="form-group">
+    <label for="inputAddress2">Area</label>
+    <input type="text" class="form-control" id="inputAddress2" placeholder="Sector 9A" disabled>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">City</label>
+      <input type="text" class="form-control" id="inputCity" value="Navi Mumbai" disabled>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputState">State</label>
+      <input type="text" class="form-control" id="inputState" value="Maharashtra" disabled>
+    </div>
+    <div class="form-group col-md-2">
+      <label for="inputZip">Zip</label>
+      <input type="text" class="form-control" id="inputZip" disabled>
+    </div>
+  </div>
+
+
+  <div class="col-md-16 text-center">
+    <button type="submit" class="col-md-16 btn btn-outline-primary btn-lg btn-outline-danger"
+      onclick="deleteVendorFromDBs();">Delete</button>
   </div>
 
   <br>
-
+  <div id="snackbar"></div>
 
 
 </div>
 
+
+<script type="text/javascript">
+  function deleteVendorFromDBs() {
+    $.ajax({
+      type: "POST",
+      cache: false,
+      url: "/deleteVendors",
+      data: {
+        // vendorName: $("#vendorName").val(),
+        // vendorRate: $("#vendorRate").val(),
+        // vendorAddress: $("#inputAddress1").val() + ', ' + $("#inputAddress2").val() + ', ' + $("#inputCity").val() + ', ' + $("#inputState").val() + ', ' + $("#inputZip").val(),
+        cardNo: $("#cardNo").val(),
+        // others: $("#others").val(),
+        // inputProduct: $("#inputProduct").val(),
+      }, // multiple data sent using ajax
+      success: function (result) {
+        console.log(result);
+        mySnakbar("Successfully deleted ");// + $("#vendorName").val() + " from database");
+
+
+      }
+    });
+  }
+</script>
 
 {% endblock %}

@@ -12,6 +12,12 @@ app = flask.Flask(__name__,static_url_path='',
 			template_folder='templates')
 app.config["DEBUG"] = True
 
+hostname = 'localhost'
+username = 'postgres'
+password = 'Quad2core@'
+database = 'erp'
+conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )
+cur = conn.cursor()
 
 @app.route('/', methods=['GET'])
 def home():
@@ -20,20 +26,108 @@ def home():
 
 
 
-@app.route('/addVendors', methods=['GET'])
+@app.route('/addVendors', methods=['GET', 'POST'])
 def addVendors():
-	names = getSearchBarData()
-	return render_template('addVendors.html', names=names)
+	if request.method == 'GET':
+		names = getSearchBarData()
+		return render_template('addVendors.html', names=names)
+	if request.method == 'POST':
+		vendorName = request.form.get("vendorName")
+		vendorRate = float(request.form.get("vendorRate"))
+		vendorAddress = request.form.get("vendorAddress")
+		cardNo = int(request.form.get("cardNo"))
+		others = request.form.get("others")
+		product = request.form.get("inputProduct")
 
-@app.route('/updateVendors', methods=['GET'])
+		if product == 'others':
+			product = others
+		print(vendorName)
+		print(vendorRate)
+		print(vendorAddress)
+		print(cardNo)
+		print(others)
+		print(product)
+		print("Insertion happening")
+		res = "Starting insertion"
+		# conn = None
+		try:
+			# conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )
+			# cur = conn.cursor()
+			cur.execute("INSERT INTO vendors(cardNo, vendorName, vendorAddress, vendorRate, item) VALUES(%s,%s,%s,%s,%s)",(cardNo, vendorName, vendorAddress, vendorRate, product))
+			conn.commit()
+			# cur.close()
+			res = "Successfully Inserted"
+		except (Exception, psycopg2.DatabaseError) as error:
+			print(error)
+			res = str(error)
+		finally:
+			if conn is not None:
+				# conn.close()
+				res = "successfully inserted"
+		return jsonify(res)
+
+@app.route('/updateVendors', methods=['GET', 'POST'])
 def updateVendors():
-	names = getSearchBarData()
-	return render_template('updateVendors.html', names=names)
+	if request.method == 'GET':
+		names = getSearchBarData()
+		return render_template('updateVendors.html', names=names)
+	if request.method == 'POST':
+		vendorName = request.form.get("vendorName")
+		vendorRate = float(request.form.get("vendorRate"))
+		vendorAddress = request.form.get("vendorAddress")
+		cardNo = int(request.form.get("cardNo"))
+		others = request.form.get("others")
+		product = request.form.get("inputProduct")
 
-@app.route('/deleteVendors', methods=['GET'])
+		if product == 'others':
+			product = others
+		print(vendorName)
+		print(vendorRate)
+		print(vendorAddress)
+		print(cardNo)
+		print(others)
+		print(product)
+		print("Insertion happening")
+		res = "Starting insertion"
+		# conn = None
+		try:
+			# conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )
+			# cur = conn.cursor()
+			cur.execute("UPDATE vendors SET vendorName = %s, vendorAddress = %s, vendorRate = %s, item = %s WHERE cardno = %s",(vendorName, vendorAddress, vendorRate, product, cardNo))
+			conn.commit()
+			# cur.close()
+			res = "Successfully Inserted"
+		except (Exception, psycopg2.DatabaseError) as error:
+			print(error)
+			res = str(error)
+		finally:
+			if conn is not None:
+				# conn.close()
+				res = "successfully updated"
+		return jsonify(res)
+
+
+@app.route('/deleteVendors', methods=['GET','POST'])
 def deleteVendors():
-	names = getSearchBarData()
-	return render_template('deleteVendors.html', names=names)
+	if request.method == 'GET':
+		names = getSearchBarData()
+		return render_template('deleteVendors.html', names=names)
+	if request.method == 'POST':
+		cardNo = str(request.form.get("cardNo"))
+		try:
+			cur.execute(f"delete from vendors where cardno = {cardNo}")
+			# allVendorData = cur.fetchall()
+			conn.commit()
+			res = 'successfully deleted'
+		except (Exception, psycopg2.DatabaseError) as error:
+			print(error)
+			res = str(error)
+		finally:
+			if conn is not None:
+				# conn.close()
+				print("Used delete")
+		return jsonify(res)
+
 
 
 @app.route('/generateBill', methods=['GET'])
@@ -46,13 +140,6 @@ def allTransactions():
 	names = getSearchBarData()
 	return render_template('allTransactions.html', names=names)
 
-@app.route('/addVendorToDB', methods=['POST'])
-def addVendorToDB():
-	vendorName = request.form.get("vendorName")
-	vendorRate = request.form.get("vendorRate")
-	vendorAddress = request.form.get("vendorAddress")
-	print(f"{vendorName}, {vendorRate} \n {vendorAddress}")
-	return jsonify("successfully received")
 
 # This is used to populate data after doing a search from search bar
 @app.route('/getFormAfterSearch', methods=['POST'])
@@ -62,18 +149,14 @@ def getFormAfterSearch():
 	vendorString = vendorString.split(':')
 	vendorCardNo = vendorString[1].strip()
 
-	conn = None
+	# conn = None
 	try:
-		hostname = 'localhost'
-		username = 'pankaj kumar'
-		password = 'quad2core'
-		database = 'postgres'
-		conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )
-		cur = conn.cursor()
+		# conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )
+		# cur = conn.cursor()
 		cur.execute(f"select * from vendors where cardno = {vendorCardNo}")
 		allVendorData = cur.fetchall()
 		conn.commit()
-		cur.close()
+		# cur.close()
 
 		resDict = {}
 		resDict['cardNo'] = allVendorData[0][0]
@@ -96,48 +179,11 @@ def getFormAfterSearch():
 		resDict = str(error)
 	finally:
 		if conn is not None:
-			conn.close()
+			# conn.close()
+			print("Used search")
 	return jsonify(resDict)
 
-@app.route('/addVendor2DB', methods=['POST'])
-def addVendor2DB():
-	vendorName = request.form.get("vendorName")
-	vendorRate = float(request.form.get("vendorRate"))
-	vendorAddress = request.form.get("vendorAddress")
-	cardNo = int(request.form.get("cardNo"))
-	others = request.form.get("others")
-	product = request.form.get("inputProduct")
 
-	if product == 'others':
-		product = others
-	print(vendorName)
-	print(vendorRate)
-	print(vendorAddress)
-	print(cardNo)
-	print(others)
-	print(product)
-	print("Insertion happening")
-	res = "Starting insertion"
-	conn = None
-	try:
-		hostname = 'localhost'
-		username = 'pankaj kumar'
-		password = 'quad2core'
-		database = 'postgres'
-		conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )
-		cur = conn.cursor()
-		cur.execute("INSERT INTO vendors(cardNo, vendorName, vendorAddress, vendorRate, item) VALUES(%s,%s,%s,%s,%s)",(cardNo, vendorName, vendorAddress, vendorRate, product))
-		conn.commit()
-		cur.close()
-		res = "Successfully Inserted"
-	except (Exception, psycopg2.DatabaseError) as error:
-		print(error)
-		res = str(error)
-	finally:
-		if conn is not None:
-			conn.close()
-			#res = "successfully inserted"
-	return jsonify(res)
 
 
 
