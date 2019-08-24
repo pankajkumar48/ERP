@@ -11,8 +11,8 @@ def getSearchBarData():
 	try:
 		hostname = 'localhost'
 		username = 'postgres'
-		password = 'Quad2core@'
-		database = 'erp'
+		password = '1234'
+		database = 'postgres'
 		conn = psycopg2.connect( host=hostname, user=username, password=password, dbname=database )
 		cur = conn.cursor()
 		cur.execute("select vendorname, cardno from vendors")
